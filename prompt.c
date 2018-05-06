@@ -3,6 +3,9 @@
 #include <stdlib.h>
 #include <parser.h>
 #include <time.h>
+#include <sys/types.h>
+#include <signal.h>
+#include <errno.h>
 #define ANSI_COLOR_RED     "\x1b[31m"
 #define ANSI_COLOR_GREEN   "\x1b[32m"
 #define ANSI_COLOR_YELLOW  "\x1b[33m"
@@ -15,6 +18,7 @@ void myclr();
 void myecho(char** ,int);
 void mytime();
 void mypwd();
+int mykill(int,int);
 void myexit();
 
 
@@ -52,10 +56,31 @@ int main(int argc, char *argv[])
 			mypwd();
 	    }else if(strcmp(input,"mycp") == 0){
 	    }else if(strcmp(input,"psinfo") == 0){
-		
+	    	int i = 0;
+	    	char* array[num+1];
+	    	for(i;i<num+1;i++){
+	    		if(i<num){
+	    			array[i] = items[1];
+	    		}else{
+	    			array[i] = NULL;
+	    	 		}
+	    		}
+	    	int pfork = fork();	
+	    	if(pfork == 0){
+	    		execv("./psinfo",array);
+	    	}else if(pfork > 0){
+	    		wait(NULL);
+	    	}else{
+	    		printf("Error creating child process");
+	    	}
 	    }else if(strcmp(input,"myps") == 0){
 	    }else if(strcmp(input,"mygrep") == 0){
 	    }else if(strcmp(input,"mykill") == 0){
+	    	if(num > 3 && num < 3){
+				printf("Por favor ingrese el comando correctamente\n");
+			}else{
+			     mykill(atoi(items[1]),atoi(items[2]));
+			}
 	    }else{
 			printf("Por favor ingrese un comando válido \n");
 		}
@@ -100,4 +125,16 @@ void mypwd(){
 
 void myclr(){
 	printf("Please complete");
+}
+
+int mykill(int pid, int signalp){
+	pid_t id = pid;
+	int result = kill(pid,signalp);
+	if(result == -1){
+		if(errno == EINVAL){
+			printf("Ha ingresado una señal inválida\n");
+		}else if(errno == ESRCH){
+			printf("El PID no existe,ingrese uno válido\n");
+		}
+	}
 }
