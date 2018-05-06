@@ -128,7 +128,6 @@ void myclr(){
 }
 
 int mykill(int pid, int signalp){
-	pid_t id = pid;
 	int result = kill(pid,signalp);
 	if(result == -1){
 		if(errno == EINVAL){
