@@ -45,9 +45,9 @@ int main(int argc, char *argv[])
 	    }else if(strcmp(input,"myexit") == 0){
 			return(0);
 	    }else if(strcmp(input,"myclr") == 0){
-		
+			myclr();
 	    }else if(strcmp(input,"mytime") == 0){
-			if(num > 1){
+			if(num > 1 && background !=1){
 				printf("Por favor ingrese el comando correctamente\n");
 			}else{
 			     mytime();
@@ -55,6 +55,24 @@ int main(int argc, char *argv[])
 	    }else if(strcmp(input,"mypwd") == 0){
 			mypwd();
 	    }else if(strcmp(input,"mycp") == 0){
+	    	int i = 0;
+	    	char* array[num+1];
+	    	for(i;i<num+1;i++){
+	    		if(i<num){
+	    			array[i] = items[i];
+	    		}else{
+	    			array[i] = NULL;
+	    	 		}
+	    		}
+	    	int pfork = fork();	
+	    	if(pfork == 0){
+	    		execv("./mycp",array);
+	    	}else if(pfork > 0){
+	    		if(background != 1)
+	    			wait(NULL);
+	    	}else{
+	    		printf("Error creating child process");
+	    	}
 	    }else if(strcmp(input,"mygrep") == 0){
 	    	int i = 0;
 	    	char* array[num+1];
@@ -69,11 +87,21 @@ int main(int argc, char *argv[])
 	    	if(pfork == 0){
 	    		execv("./mygrep",array);
 	    	}else if(pfork > 0){
-	    		wait(NULL);
+	    		if(background != 1)
+	    			wait(NULL);
 	    	}else{
 	    		printf("Error creating child process");
 	    	}
 	    }else if(strcmp(input,"myps") == 0){
+	    	int pfork = fork();	
+	    	if(pfork == 0){
+	    		execv("./myps",	NULL);
+	    	}else if(pfork > 0){
+	    		if(background != 1)
+	    			wait(NULL);
+	    	}else{
+	    		printf("Error creating child process");
+	    	}
 	    }else if(strcmp(input,"psinfo") == 0){
 	    		    	int i = 0;
 	    	char* array[num+1];
@@ -88,7 +116,8 @@ int main(int argc, char *argv[])
 	    	if(pfork == 0){
 	    		execv("./psinfo",array);
 	    	}else if(pfork > 0){
-	    		wait(NULL);
+	    		if(background != 1)
+	    			wait(NULL);
 	    	}else{
 	    		printf("Error creating child process");
 	    	}
@@ -141,7 +170,7 @@ void mypwd(){
 }
 
 void myclr(){
-	printf("Please complete");
+	printf("\e[1;1H\e[2J");
 }
 
 int mykill(int pid, int signalp){
