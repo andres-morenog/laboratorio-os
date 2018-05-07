@@ -55,12 +55,31 @@ int main(int argc, char *argv[])
 	    }else if(strcmp(input,"mypwd") == 0){
 			mypwd();
 	    }else if(strcmp(input,"mycp") == 0){
-	    }else if(strcmp(input,"psinfo") == 0){
+	    }else if(strcmp(input,"mygrep") == 0){
 	    	int i = 0;
 	    	char* array[num+1];
 	    	for(i;i<num+1;i++){
 	    		if(i<num){
-	    			array[i] = items[1];
+	    			array[i] = items[i];
+	    		}else{
+	    			array[i] = NULL;
+	    	 		}
+	    		}
+	    	int pfork = fork();	
+	    	if(pfork == 0){
+	    		execv("./mygrep",array);
+	    	}else if(pfork > 0){
+	    		wait(NULL);
+	    	}else{
+	    		printf("Error creating child process");
+	    	}
+	    }else if(strcmp(input,"myps") == 0){
+	    }else if(strcmp(input,"psinfo") == 0){
+	    		    	int i = 0;
+	    	char* array[num+1];
+	    	for(i;i<num+1;i++){
+	    		if(i<num){
+	    			array[i] = items[i];
 	    		}else{
 	    			array[i] = NULL;
 	    	 		}
@@ -73,8 +92,6 @@ int main(int argc, char *argv[])
 	    	}else{
 	    		printf("Error creating child process");
 	    	}
-	    }else if(strcmp(input,"myps") == 0){
-	    }else if(strcmp(input,"mygrep") == 0){
 	    }else if(strcmp(input,"mykill") == 0){
 	    	if(num > 3 && num < 3){
 				printf("Por favor ingrese el comando correctamente\n");
@@ -83,7 +100,7 @@ int main(int argc, char *argv[])
 			}
 	    }else{
 			printf("Por favor ingrese un comando válido \n");
-		}
+			}
         }
         liberaItems (items);
     }
